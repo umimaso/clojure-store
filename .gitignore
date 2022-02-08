@@ -17,3 +17,4 @@ profiles.clj
 
 .clj-kondo
 .lsp
+.eastwood
