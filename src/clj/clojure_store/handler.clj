@@ -3,7 +3,8 @@
   (:require
    [clojure-store.middleware :as middleware]
    [clojure-store.layout :refer [error-page]]
-   [clojure-store.routes.home :refer [home-routes]]
+   [clojure-store.routes.dashboard :refer [dashboard-routes]]
+   [clojure-store.routes.order :refer [order-routes]]
    [reitit.ring :as ring]
    [ring.middleware.content-type :refer [wrap-content-type]]
    [ring.middleware.webjars :refer [wrap-webjars]]
@@ -18,7 +19,7 @@
   :start
   (ring/ring-handler
    (ring/router
-    [(home-routes)])
+    [(dashboard-routes) (order-routes)])
    (ring/routes
     (ring/create-resource-handler
      {:path "/"})
