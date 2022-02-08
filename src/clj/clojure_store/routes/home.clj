@@ -1,3 +1,4 @@
+; Defines routes for the application
 (ns clojure-store.routes.home
   (:require
    [clojure-store.layout :as layout]
@@ -6,16 +7,12 @@
    [ring.util.response]
    [ring.util.http-response :as response]))
 
-(defn home-page [request]
-  (layout/render request "home.html" {:docs (-> "docs/docs.md" io/resource slurp)}))
-
-(defn about-page [request]
-  (layout/render request "about.html"))
+(defn dashboard [request]
+  (layout/render request "dashboard.html"))
 
 (defn home-routes []
   [""
    {:middleware [middleware/wrap-csrf
                  middleware/wrap-formats]}
-   ["/" {:get home-page}]
-   ["/about" {:get about-page}]])
+   ["/" {:get dashboard}]])
 
