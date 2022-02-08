@@ -3,15 +3,16 @@
   :description "FIXME: write description"
   :url "http://example.com/FIXME"
 
-  :dependencies [[ch.qos.logback/logback-classic "1.2.7"]
-                 [clojure.java-time "0.3.3"]
+  :dependencies [[clojure.java-time "0.3.3"]
+                 [com.h2database/h2 "2.1.210"]
+                 [conman "0.9.3"]
                  [cprop "0.1.19"]
                  [expound "0.8.10"]
                  [funcool/struct "1.4.0"]
                  [json-html "0.4.7"]
+                 [luminus-immutant "0.2.5"]
+                 [luminus-migrations "0.7.1"]
                  [luminus-transit "0.1.3"]
-                 [luminus-undertow "0.1.14"]
-                 [luminus/ring-ttl-session "0.3.3"]
                  [markdown-clj "1.10.7"]
                  [metosin/muuntaja "0.6.8"]
                  [metosin/reitit "0.5.15"]
@@ -28,9 +29,7 @@
                  [ring-webjars "0.2.0"]
                  [ring/ring-core "1.9.4"]
                  [ring/ring-defaults "0.3.3"]
-                 [selmer "1.12.45"]
-                 [com.h2database/h2 "1.4.193"]]
-
+                 [selmer "1.12.45"]]
   :min-lein-version "2.0.0"
 
   :source-paths ["src/clj"]
@@ -39,7 +38,7 @@
   :target-path "target/%s/"
   :main ^:skip-aot clojure-store.core
 
-  :plugins [[lein-cljfmt "0.8.0"]]
+  :plugins [[lein-immutant "2.1.0"] [lein-cljfmt "0.8.0"]]
 
   :profiles
   {:uberjar {:omit-source true

@@ -9,7 +9,7 @@
    [muuntaja.middleware :refer [wrap-format wrap-params]]
    [clojure-store.config :refer [env]]
    [ring.middleware.flash :refer [wrap-flash]]
-   [ring.adapter.undertow.middleware.session :refer [wrap-session]]
+   [immutant.web.middleware :refer [wrap-session]]
    [ring.middleware.defaults :refer [site-defaults wrap-defaults]]))
 
 (defn wrap-internal-error [handler]
