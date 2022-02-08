@@ -1,3 +1,4 @@
+;  Defines the base routes for the application, this is the entry point into the application
 (ns clojure-store.handler
   (:require
    [clojure-store.middleware :as middleware]

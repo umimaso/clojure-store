@@ -1,3 +1,4 @@
+; Layout helpers used to render the content for our pages
 (ns clojure-store.layout
   (:require
    [clojure.java.io]

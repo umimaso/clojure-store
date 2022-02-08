@@ -1,3 +1,4 @@
+; Entry point for the application that contains the logic for starting and stopping the server
 (ns clojure-store.core
   (:require
    [clojure-store.handler :as handler]

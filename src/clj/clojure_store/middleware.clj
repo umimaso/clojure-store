@@ -1,3 +1,4 @@
+; Contains custom middleware for the application
 (ns clojure-store.middleware
   (:require
    [clojure-store.env :refer [defaults]]
