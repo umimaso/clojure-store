@@ -6,7 +6,8 @@
    [clojure.spec.alpha :as s]
    [expound.alpha :as expound]
    [mount.core :as mount]
-   [clojure-store.core :refer [start-app]]))
+   [clojure-store.core :refer [start-app]]
+   [luminus-migrations.core :as migrations]))
 
 (alter-var-root #'s/*explain-out* (constantly expound/printer))
 
@@ -29,4 +30,7 @@
   (stop)
   (start))
 
-
+(defn create-migration
+  "Create a new up and down migration file with a generated timestamp and `name`."
+  [name]
+  (migrations/create name (select-keys env [:database-url])))
