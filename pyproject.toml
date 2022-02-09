@@ -1,0 +1,2 @@
+[tool.sqlfluff.core]
+exclude_rules = "L059, L057"
