@@ -4,7 +4,6 @@
   :url "http://example.com/FIXME"
 
   :dependencies [[clojure.java-time "0.3.3"]
-                 [com.h2database/h2 "2.1.210"]
                  [conman "0.9.3"]
                  [cprop "0.1.19"]
                  [expound "0.8.10"]
@@ -26,6 +25,7 @@
                  [org.webjars.npm/material-icons "1.0.0"]
                  [org.webjars/webjars-locator "0.42"]
                  [org.webjars/webjars-locator-jboss-vfs "0.1.0"]
+                 [org.xerial/sqlite-jdbc "3.36.0.3"]
                  [ring-webjars "0.2.0"]
                  [ring/ring-core "1.9.4"]
                  [ring/ring-defaults "0.3.3"]

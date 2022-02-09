@@ -1,2 +1,2 @@
 {:port 3000
- :database-url "jdbc:h2:./data/clojure_store_test.db"}
+ :database-url "jdbc:sqlite:./data/clojure_store_test.db"}
