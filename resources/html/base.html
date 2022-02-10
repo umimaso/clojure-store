@@ -12,21 +12,19 @@
 		{% style """/css/screen.css" %}
 	</head>
 	<body>
-		<nav class="navbar is-info">
-			<div class="container">
-				<div class="navbar-brand">
-					<a class="navbar-item" href="/" style="font-weight:bold;">clojure-store</a>
-					<span class="navbar-burger burger" data-target="nav-menu">
-						<span></span>
-						<span></span>
-						<span></span>
-					</span>
-				</div>
-				<div id="nav-menu" class="navbar-menu">
-					<div class="navbar-start">
-						<a href="/" class="navbar-item{% ifequal page "dashboard.html" %} is-active{%endifequal%}">Dashboard</a>
-						<a href="/order" class="navbar-item{% ifequal page "order.html" %} is-active{%endifequal%}">Order</a>
-					</div>
+		<nav class="navbar is-dark" role="navigation" aria-label="main navigation">
+			<div class="navbar-brand">
+				<a class="navbar-item" href="/">clojure-store</a>
+				<a role="button" class="navbar-burger" data-target="navMenu" aria-label="menu" aria-expanded="false">
+					<span aria-hidden="true"></span>
+					<span aria-hidden="true"></span>
+					<span aria-hidden="true"></span>
+				</a>
+			</div>
+			<div class="navbar-menu" id="navMenu">
+				<div class="navbar-start">
+					<a href="/" class="navbar-item {% ifequal page "dashboard.html" %}is-active{%endifequal%}">Dashboard</a>
+					<a href="/order" class="navbar-item {% ifequal page "order.html" %}is-active{%endifequal%}">Order</a>
 				</div>
 			</div>
 		</nav>
@@ -38,19 +36,15 @@
 			</div>
 		</section>
 
-		<!-- scripts -->
 		<script type="text/javascript">
-			(function() {
-			var burger = document.querySelector('.burger');
-			var nav = document.querySelector('#'+burger.dataset.target);
-			burger.addEventListener('click', function(){
-				burger.classList.toggle('is-active');
-				nav.classList.toggle('is-active');
+			document.addEventListener('DOMContentLoaded', () => {
+				const navbarBurger = document.querySelector('.navbar-burger');
+				const nav = document.getElementById(navbarBurger.dataset.target);
+				navbarBurger.addEventListener('click', () => {
+					navbarBurger.classList.toggle('is-active');
+					nav.classList.toggle('is-active');
+				});
 			});
-			})();
 		</script>
-
-		{% block page-scripts %}
-		{% endblock %}
 	</body>
 </html>
