@@ -1,4 +1,43 @@
 {% extends "base.html" %}
 {% block content %}
-<h1>TODO: Order page</h1>
+<h1 class="title">T-Shirt Order Form</h1>
+<div class="container">
+	<form>
+		<h2 class="subtitle">Personal Details</h2>
+		<div class="field">
+			<label class="label">Full Name</label>
+			<div class="control">
+				<input class="input" type="text" placeholder="John Doe">
+			</div>
+			<span class="icon is-small is-left">
+				<i class="fas fa-user"></i>
+			</span>
+		</div>
+
+		<h2 class="subtitle">T-Shirt Options</h2>
+		{% for option-type in option-types %}
+		<div class="field">
+			<label class="label">{{ option-type.tshirt_option_type_name }}</label>
+			<div class="control">
+				<div class="select">
+					<select>
+						{% for option in options %}
+						{% if option-type.id = option.tshirt_option_type_id %}
+						<option>{{ option.tshirt_option_name }}</option>
+						{% endif %}
+						{% endfor %}
+					</select>
+				</div>
+			</div>
+		</div>
+		{% endfor %}
+
+		<div class="field">
+			<div class="control">
+				<button class="button is-primary">Submit</button>
+			</div>
+		</div>
+	</form>
+</div>
+
 {% endblock %}
