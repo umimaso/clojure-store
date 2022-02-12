@@ -1,26 +1,60 @@
 {% extends "base.html" %}
 {% block content %}
+<noscript>
+	<h1 class="title">Please enable Javascript for this page.</h1>
+	<hr>
+</noscript>
+
 <h1 class="title">T-Shirt Order Form</h1>
 <div class="container">
-	<form>
+	<form method="POST">
+		{% csrf-field %}
 		<h2 class="subtitle">Personal Details</h2>
 		<div class="field">
-			<label class="label">Full Name</label>
-			<div class="control">
-				<input class="input" type="text" placeholder="John Doe">
+			<label class="label">Full Name <span class="required-field">*</span></label>
+			<div class="control has-icons-left">
+				<input class="input" type="text" placeholder="John Doe" required>
+				<span class="icon is-small is-left">
+					<i class="fa-solid fa-user"></i>
+				</span>
 			</div>
-			<span class="icon is-small is-left">
-				<i class="fas fa-user"></i>
-			</span>
 		</div>
+
+		<div class="field">
+			<label class="label">Email <span class="required-field">*</span></label>
+			<div class="control has-icons-left">
+				<input class="input" type="email" placeholder="e.g." required>
+				<span class="icon is-small is-left">
+					<i class="fa-solid fa-envelope"></i>
+				</span>
+			</div>
+		</div>
+
+		<div class="field">
+			<label class="label">Phone Number <span class="required-field">*</span></label>
+			<div class="control has-icons-left">
+				<input class="input" type="tel" placeholder="e.g." required>
+				<span class="icon is-small is-left">
+					<i class="fa-solid fa-phone"></i>
+				</span>
+			</div>
+		</div>
+
+		<div class="field">
+			<label class="label">Shipping Address <span class="required-field">*</span></label>
+			<div class="control">
+				<textarea class="textarea" type="text" placeholder="e.g. " rows="3" required></textarea>
+			</div>
+		</div>
+		<hr>
 
 		<h2 class="subtitle">T-Shirt Options</h2>
 		{% for option-type in option-types %}
 		<div class="field">
-			<label class="label">{{ option-type.tshirt_option_type_name }}</label>
+			<label class="label">{{ option-type.tshirt_option_type_name }} <span class="required-field">*</span></label>
 			<div class="control">
 				<div class="select">
-					<select>
+					<select required>
 						{% for option in options %}
 						{% if option-type.id = option.tshirt_option_type_id %}
 						<option>{{ option.tshirt_option_name }}</option>
@@ -31,10 +65,29 @@
 			</div>
 		</div>
 		{% endfor %}
+		<hr>
+
+		<h2 class="subtitle">Order Details</h2>
+		<div class="field">
+			<label class="label">Delivery Details</label>
+			<div class="control">
+				<textarea class="textarea" type="text" placeholder="e.g. " rows="2"></textarea>
+			</div>
+		</div>
+
+		<div class="field">
+			<label class="label">Quantity <span class="required-field">*</span></label>
+			<div class="control has-icons-left">
+				<input class="input" type="number" placeholder="1" min="1" required>
+				<span class="icon is-small is-left">
+					<i class="fa-solid fa-shirt"></i>
+				</span>
+			</div>
+		</div>
 
 		<div class="field">
 			<div class="control">
-				<button class="button is-primary">Submit</button>
+				<button class="button is-primary">Place Order</button>
 			</div>
 		</div>
 	</form>

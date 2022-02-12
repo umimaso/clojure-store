@@ -1,10 +1,11 @@
 CREATE TABLE tshirt_order
 (id INTEGER PRIMARY KEY,
     full_name TEXT,
-    shipping_address TEXT,
+    email TEXT,
     phone_number TEXT,
-    quantity INTEGER,
+    shipping_address TEXT,
     delivery_details TEXT,
+    quantity INTEGER,
     price TEXT,
     payment_success BOOLEAN,
     delivered BOOLEAN);

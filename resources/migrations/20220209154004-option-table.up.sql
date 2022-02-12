@@ -32,6 +32,7 @@ INSERT INTO tshirt_option (
 (2, "Violet", "ee82ee"),
 (3, "Standard", "9.99"),
 (3, "Supreme", "15.99"),
-(4, "Clojure", NULL),
-(4, "Common Lisp", NULL),
-(4, "Emacs Lisp", NULL);
+(4, "Clojure", "https://upload.wikimedia.org/wikipedia/commons/5/5d/Clojure_logo.svg"),
+(4, "Python", "https://www.python.org/static/community_logos/python-logo-generic.svg"),
+(4, "Rust", "https://upload.wikimedia.org/wikipedia/commons/d/d5/Rust_programming_language_black_logo.svg"),
+(4, "Custom", NULL);

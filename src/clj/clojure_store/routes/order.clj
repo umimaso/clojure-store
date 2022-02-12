@@ -7,7 +7,7 @@
    [ring.util.response]
    [ring.util.http-response :as response]))
 
-(defn order [request]
+(defn order-form [request]
   (layout/render
    request
    "order.html"
@@ -15,8 +15,15 @@
     {:option-types (db/get-tshirt-option-types)}
     {:options (db/get-tshirt-options)})))
 
+(defn new-order [request]
+  (layout/render
+   request
+   "order-confirmation.html"
+   (response/found "/order/confirmation")))
+
 (defn order-routes []
   [""
    {:middleware [middleware/wrap-csrf
                  middleware/wrap-formats]}
-   ["/order" {:get order}]])
+   ["/order" {:get order-form
+              :post new-order}]])
