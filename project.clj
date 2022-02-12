@@ -21,7 +21,7 @@
                  [org.clojure/tools.cli "1.0.206"]
                  [org.clojure/tools.logging "1.2.3"]
                  [org.webjars.npm/bulma "0.9.3"]
-                 [org.webjars.npm/material-icons "1.0.0"]
+                 [org.webjars/font-awesome "6.0.0"]
                  [org.webjars/webjars-locator "0.42"]
                  [org.webjars/webjars-locator-jboss-vfs "0.1.0"]
                  [org.xerial/sqlite-jdbc "3.36.0.3"]
