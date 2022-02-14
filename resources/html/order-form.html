@@ -11,9 +11,9 @@
 		{% csrf-field %}
 		<h2 class="subtitle">Personal Details</h2>
 		<div class="field">
-			<label class="label">Full Name <span class="required-field">*</span></label>
+			<label class="label" for="full_name">Full Name <span class="required-field">*</span></label>
 			<div class="control has-icons-left">
-				<input class="input" type="text" placeholder="John Doe" required>
+				<input class="input" type="text" id="full_name" name="full_name" placeholder="John Doe" required>
 				<span class="icon is-small is-left">
 					<i class="fa-solid fa-user"></i>
 				</span>
@@ -21,9 +21,9 @@
 		</div>
 
 		<div class="field">
-			<label class="label">Email <span class="required-field">*</span></label>
+			<label class="label" for="email">Email <span class="required-field">*</span></label>
 			<div class="control has-icons-left">
-				<input class="input" type="email" placeholder="e.g." required>
+				<input class="input" type="email" id="email" name="email" placeholder="e.g." required>
 				<span class="icon is-small is-left">
 					<i class="fa-solid fa-envelope"></i>
 				</span>
@@ -31,9 +31,9 @@
 		</div>
 
 		<div class="field">
-			<label class="label">Phone Number <span class="required-field">*</span></label>
+			<label class="label" for="phone_number">Phone Number <span class="required-field">*</span></label>
 			<div class="control has-icons-left">
-				<input class="input" type="tel" placeholder="e.g." required>
+				<input class="input" type="tel" id="phone_number" name="phone_number" placeholder="e.g." required>
 				<span class="icon is-small is-left">
 					<i class="fa-solid fa-phone"></i>
 				</span>
@@ -41,9 +41,9 @@
 		</div>
 
 		<div class="field">
-			<label class="label">Shipping Address <span class="required-field">*</span></label>
+			<label class="label" for="shipping_address">Shipping Address <span class="required-field">*</span></label>
 			<div class="control">
-				<textarea class="textarea" type="text" placeholder="e.g. " rows="3" required></textarea>
+				<textarea class="textarea" type="text" id="shipping_address" name="shipping_address" placeholder="e.g. " rows="3" required></textarea>
 			</div>
 		</div>
 		<hr>
@@ -51,13 +51,13 @@
 		<h2 class="subtitle">T-Shirt Options</h2>
 		{% for option-type in option-types %}
 		<div class="field">
-			<label class="label">{{ option-type.tshirt_option_type_name }} <span class="required-field">*</span></label>
+			<label class="label" for="{{ option-type.tshirt_option_type_name }}">{{ option-type.tshirt_option_type_name }} <span class="required-field">*</span></label>
 			<div class="control">
 				<div class="select">
-					<select required>
+					<select id="{{ option-type.tshirt_option_type_name|lower }}" name="{{ option-type.tshirt_option_type_name|lower }}" required>
 						{% for option in options %}
 						{% if option-type.id = option.tshirt_option_type_id %}
-						<option>{{ option.tshirt_option_name }}</option>
+						<option value="{{ option.tshirt_option_name }}">{{ option.tshirt_option_name }}</option>
 						{% endif %}
 						{% endfor %}
 					</select>
@@ -69,16 +69,16 @@
 
 		<h2 class="subtitle">Order Details</h2>
 		<div class="field">
-			<label class="label">Delivery Details</label>
+			<label class="label" for="delivery_details">Delivery Details</label>
 			<div class="control">
-				<textarea class="textarea" type="text" placeholder="e.g. " rows="2"></textarea>
+				<textarea class="textarea" type="text" id="delivery_details" name="delivery_details" placeholder="e.g. " rows="2"></textarea>
 			</div>
 		</div>
 
 		<div class="field">
-			<label class="label">Quantity <span class="required-field">*</span></label>
+			<label class="label" for="quantity">Quantity <span class="required-field">*</span></label>
 			<div class="control has-icons-left">
-				<input class="input" type="number" placeholder="1" min="1" required>
+				<input class="input" type="number" id="quantity" name="quantity" placeholder="1" min="1" required>
 				<span class="icon is-small is-left">
 					<i class="fa-solid fa-shirt"></i>
 				</span>
@@ -92,5 +92,4 @@
 		</div>
 	</form>
 </div>
-
 {% endblock %}
