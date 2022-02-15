@@ -37,7 +37,7 @@
             :phone_number [st/required st/string]
             :shipping_address [st/required st/string]
             :delivery_details [st/string]
-            :quantity [st/required st/integer-str]}
+            :quantity [st/required st/integer-str]} ; TODO: Prevent quantity accepting negative values
           ; Dynamic schema generated from the database
            (zipmap
             (for
@@ -61,7 +61,6 @@
     {:options (db/get-tshirt-options)}
     (select-keys flash [:errors :full_name :email :phone_number :shipping_address :delivery_details :quantity]))))
 
-; TODO: Display errors on order page
 ; TODO: Add new order to database if order is successful
 ; TODO: Display order confirmation after adding order to database
 (defn new-order [{:keys [params]}]
