@@ -14,16 +14,16 @@
 		<nav class="navbar is-dark" role="navigation" aria-label="main navigation">
 			<div class="navbar-brand">
 				<a class="navbar-item" href="/">clojure-store</a>
-				<a role="button" class="navbar-burger" data-target="navMenu" aria-label="menu" aria-expanded="false">
+				<a role="button" class="navbar-burger is-active" data-target="navMenu" aria-label="menu" aria-expanded="true">
 					<span aria-hidden="true"></span>
 					<span aria-hidden="true"></span>
 					<span aria-hidden="true"></span>
 				</a>
 			</div>
-			<div class="navbar-menu" id="navMenu">
+			<div class="navbar-menu is-active" id="navMenu">
 				<div class="navbar-start">
 					<a href="/" class="navbar-item {% ifequal page "dashboard.html" %}is-active{%endifequal%}">Dashboard</a>
-					<a href="/order" class="navbar-item {% ifequal page "order.html" %}is-active{%endifequal%}">Order</a>
+					<a href="/order" class="navbar-item {% ifequal page "order-form.html" %}is-active{%endifequal%}">Order</a>
 				</div>
 			</div>
 		</nav>
@@ -39,6 +39,10 @@
 			document.addEventListener('DOMContentLoaded', () => {
 				const navbarBurger = document.querySelector('.navbar-burger');
 				const nav = document.getElementById(navbarBurger.dataset.target);
+
+				// Hamburger menu defaults open for no JS support, collapse it back
+				navbarBurger.classList.toggle('is-active');
+				nav.classList.toggle('is-active');
 				navbarBurger.addEventListener('click', () => {
 					navbarBurger.classList.toggle('is-active');
 					nav.classList.toggle('is-active');
