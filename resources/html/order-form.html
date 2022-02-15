@@ -7,39 +7,66 @@
 		<h2 class="subtitle">Personal Details</h2>
 		<div class="field">
 			<label class="label" for="full_name">Full Name <span class="required-field">*</span></label>
-			<div class="control has-icons-left">
-				<input class="input" type="text" id="full_name" name="full_name" placeholder="John Doe" required>
+			<div class="control has-icons-left has-icons-right">
+				<input value="{{ full_name }}" class="input {% if errors.full_name %}is-danger{% endif %}" type="text" id="full_name" name="full_name" placeholder="First Last" required>
 				<span class="icon is-small is-left">
 					<i class="fa-solid fa-user"></i>
 				</span>
+				{% if errors.full_name %}
+				<span class="icon is-small is-right">
+					<i class="fas fa-exclamation-triangle"></i>
+				</span>
+				{% endif %}
 			</div>
+			{% if errors.full_name %}
+			<p class="help is-danger">{{ errors.full_name }}</p>
+			{% endif %}
 		</div>
 
 		<div class="field">
 			<label class="label" for="email">Email <span class="required-field">*</span></label>
-			<div class="control has-icons-left">
-				<input class="input" type="email" id="email" name="email" placeholder="e.g." required>
+			<div class="control has-icons-left has-icons-right">
+				<input value="{{ email }}" class="input {% if errors.email %}is-danger{% endif %}" type="email" id="email" name="email" placeholder="user@domain.tld" required>
 				<span class="icon is-small is-left">
 					<i class="fa-solid fa-envelope"></i>
 				</span>
+				{% if errors.email %}
+				<span class="icon is-small is-right">
+					<i class="fas fa-exclamation-triangle"></i>
+				</span>
+				{% endif %}
 			</div>
+			{% if errors.email %}
+			<p class="help is-danger">{{ errors.email }}</p>
+			{% endif %}
 		</div>
 
 		<div class="field">
 			<label class="label" for="phone_number">Phone Number <span class="required-field">*</span></label>
-			<div class="control has-icons-left">
-				<input class="input" type="tel" id="phone_number" name="phone_number" placeholder="e.g." required>
+			<div class="control has-icons-left  has-icons-right">
+				<input value="{{ phone_number }}" class="input {% if errors.phone_number %}is-danger{% endif %}" type="tel" id="phone_number" name="phone_number" placeholder="00000 000 000" required>
 				<span class="icon is-small is-left">
 					<i class="fa-solid fa-phone"></i>
 				</span>
+				{% if errors.phone_number %}
+				<span class="icon is-small is-right">
+					<i class="fas fa-exclamation-triangle"></i>
+				</span>
+				{% endif %}
 			</div>
+			{% if errors.phone_number %}
+			<p class="help is-danger">{{ errors.phone_number }}</p>
+			{% endif %}
 		</div>
 
 		<div class="field">
 			<label class="label" for="shipping_address">Shipping Address <span class="required-field">*</span></label>
 			<div class="control">
-				<textarea class="textarea" type="text" id="shipping_address" name="shipping_address" placeholder="e.g. " rows="3" required></textarea>
+				<textarea class="textarea {% if errors.shipping_address %}is-danger{% endif %}" type="text" id="shipping_address" name="shipping_address" placeholder="Where to ship the order to" rows="3" required>{{ shipping_address }}</textarea>
 			</div>
+			{% if errors.shipping_address %}
+			<p class="help is-danger">{{ errors.shipping_address }}</p>
+			{% endif %}
 		</div>
 		<hr>
 
@@ -66,18 +93,29 @@
 		<div class="field">
 			<label class="label" for="delivery_details">Delivery Details</label>
 			<div class="control">
-				<textarea class="textarea" type="text" id="delivery_details" name="delivery_details" placeholder="e.g. " rows="2"></textarea>
+				<textarea class="textarea {% if errors.delivery_details %}is-danger{% endif %}" type="text" id="delivery_details" name="delivery_details" placeholder="Additional details" rows="2">{{ delivery_details }}</textarea>
 			</div>
+			{% if errors.delivery_details %}
+			<p class="help is-danger">{{ errors.delivery_details }}</p>
+			{% endif %}
 		</div>
 
 		<div class="field">
 			<label class="label" for="quantity">Quantity <span class="required-field">*</span></label>
-			<div class="control has-icons-left">
-				<input class="input" type="number" id="quantity" name="quantity" placeholder="1" min="1" required>
+			<div class="control has-icons-left has-icons-right">
+				<input value="{{ quantity }}" class="input {% if errors.quantity %}is-danger{% endif %}" type="number" id="quantity" name="quantity" placeholder="1" min="1" required>
 				<span class="icon is-small is-left">
 					<i class="fa-solid fa-shirt"></i>
 				</span>
+				{% if errors.quantity %}
+				<span class="icon is-small is-right">
+					<i class="fas fa-exclamation-triangle"></i>
+				</span>
+				{% endif %}
 			</div>
+			{% if errors.quantity %}
+			<p class="help is-danger">{{ errors.quantity }}</p>
+			{% endif %}
 		</div>
 
 		<div class="field">

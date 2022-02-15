@@ -52,22 +52,24 @@
 ;
 ; Routes
 ;
-(defn order-form [request]
+(defn order-form [{:keys [flash] :as request}]
   (layout/render
    request
    "order-form.html"
    (merge
     {:option-types (db/get-tshirt-option-types)}
-    {:options (db/get-tshirt-options)})))
+    {:options (db/get-tshirt-options)}
+    (select-keys flash [:errors :full_name :email :phone_number :shipping_address :delivery_details :quantity]))))
 
 ; TODO: Display errors on order page
 ; TODO: Add new order to database if order is successful
 ; TODO: Display order confirmation after adding order to database
 (defn new-order [{:keys [params]}]
   (if-let [errors (validate-order params)]
-    (-> (response/found "/order")
-        (log/debug errors))
-    (-> (response/found "/order/confirmation"))))
+    (->
+     (response/found "/order")
+     (assoc :flash (assoc params :errors errors)))
+    (response/found "/order/confirmation")))
 
 ; TODO: Display confirmed order id in template
 (defn order-confirmation [request]
