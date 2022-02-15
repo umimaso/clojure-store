@@ -87,6 +87,24 @@
 			</div>
 		</div>
 		{% endfor %}
+
+		<div class="field">
+			<label class="label" for="custom_image_url">Custom Image</label>
+			<div class="control has-icons-left has-icons-right">
+				<input value="{{ custom_image_url }}" class="input {% if errors.custom_image_url %}is-danger{% endif %}" type="text" id="custom_image_url" name="custom_image_url" placeholder="URL to an image">
+				<span class="icon is-small is-left">
+					<i class="fa-solid fa-image"></i>
+				</span>
+				{% if errors.custom_image_url %}
+				<span class="icon is-small is-right">
+					<i class="fas fa-exclamation-triangle"></i>
+				</span>
+				{% endif %}
+			</div>
+			{% if errors.custom_image_url %}
+			<p class="help is-danger">{{ errors.custom_image_url }}</p>
+			{% endif %}
+		</div>
 		<hr>
 
 		<h2 class="subtitle">Order Details</h2>

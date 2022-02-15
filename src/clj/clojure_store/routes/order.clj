@@ -37,7 +37,8 @@
             :phone_number [st/required st/string]
             :shipping_address [st/required st/string]
             :delivery_details [st/string]
-            :quantity [st/required st/integer-str]} ; TODO: Prevent quantity accepting negative values
+            :quantity [st/required st/integer-str] ; TODO: Prevent quantity accepting negative values
+            :custom_image_url [st/string]}
           ; Dynamic schema generated from the database
            (zipmap
             (for
@@ -49,6 +50,15 @@
                                        [{:keys [tshirt_option_name]} (db/get-tshirt-option-names-for-type {:type_id id})]
                                         tshirt_option_name)]]))))))
 
+; If the custom image option was selected, ensure that the field isn't empty
+(defn validate-order-image
+  [params]
+  ; Custom image is selected
+  (if (= (get params :image) "Custom")
+    ; Check if custom image url is blank
+    (if-let [custom-image (str/blank? (get params :custom_image_url))]
+      (hash-map :custom_image_url "this field is mandatory"))))
+
 ;
 ; Routes
 ;
@@ -59,12 +69,15 @@
    (merge
     {:option-types (db/get-tshirt-option-types)}
     {:options (db/get-tshirt-options)}
-    (select-keys flash [:errors :full_name :email :phone_number :shipping_address :delivery_details :quantity]))))
+    (select-keys flash [:errors :full_name :email :phone_number :shipping_address :custom_image_url :delivery_details :quantity]))))
 
 ; TODO: Add new order to database if order is successful
 ; TODO: Display order confirmation after adding order to database
 (defn new-order [{:keys [params]}]
-  (if-let [errors (validate-order params)]
+  (if-let [errors
+           (merge
+            (validate-order params)
+            (validate-order-image params))]
     (->
      (response/found "/order")
      (assoc :flash (assoc params :errors errors)))
