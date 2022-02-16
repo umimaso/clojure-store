@@ -71,6 +71,7 @@
 		<hr>
 
 		<h2 class="subtitle">T-Shirt Options</h2>
+		<p class="help is-danger">{{ errors.tshirt_option }}</p>
 		{% for option-type in option-types %}
 		<div class="field">
 			<label class="label" for="{{ option-type.tshirt_option_type_name }}">{{ option-type.tshirt_option_type_name }} <span class="required-field">*</span></label>

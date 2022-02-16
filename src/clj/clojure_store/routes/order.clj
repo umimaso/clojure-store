@@ -27,7 +27,8 @@
 ;   :quality [st/required [st/member ["Standard" "Supreme"]]]
 ;   :image [st/required [st/member ["Clojure" "Python" "Rust" "Custom"]]]})
 
-(defn validate-order
+; Validate the order against expected schema
+(defn validate-order-schema
   [params]
   (first (st/validate
           params
@@ -59,6 +60,34 @@
     (if-let [custom-image (str/blank? (get params :custom_image_url))]
       (hash-map :custom_image_url "this field is mandatory when custom image is selected"))))
 
+; Validate that the order options selected are in stock
+(defn validate-order-stock
+  [params]
+  ; For each option type get id of the selected option in the order
+  ; With the selected option id, get the stock count for it
+  ; Check if stock is more than quantity requested
+  ; If more quantity is requested than the stock we have than return error
+  (let [quantity (Integer/parseInt (get params :quantity))]
+    (let [result (into {}
+          (for [{:keys [tshirt_option_type_name id]} (db/get-option-types)]
+            (if-let [stock
+                     (get
+                      (db/get-stock-for-option-id
+                       {:option_id
+                        (get
+                         (db/get-option-for-type-and-name
+                          {:type_id id,
+                           :option_name (get params (keyword (str/lower-case tshirt_option_type_name)))})
+                         :id)})
+                      :stock_count)]
+              ; Stock defined for option
+              ; Compare stock against quantity in order
+              (if (> quantity stock)
+                ; Higher quantity requested for option than in stock
+                (hash-map :tshirt_option "Item(s) selected not in stock")))))]
+              (if (not= result {})
+                result))))
+
 ;
 ; Routes
 ;
@@ -74,8 +103,9 @@
 (defn new-order [{:keys [params]}]
   (if-let [errors
            (merge
-            (validate-order params)
-            (validate-order-image params))]
+            (validate-order-schema params)
+            (validate-order-image params)
+            (validate-order-stock params))]
     (->
      (response/found "/order")
      (assoc :flash (assoc params :errors errors)))

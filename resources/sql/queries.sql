@@ -24,6 +24,12 @@ SELECT
     tshirt_option_value
 FROM tshirt_option WHERE tshirt_option_type_id = :type_id AND tshirt_option_name = :option_name AND is_deleted = 0;
 
+-- :name get-stock-for-option-id :? :1
+-- :doc retrieve stock count for a given option id
+SELECT
+    stock_count
+FROM tshirt_option_stock WHERE tshirt_option_id = :option_id;
+
 -- :name get-price-for-quality :? :1
 -- :doc retrieve the price for a given tshirt quality
 SELECT tshirt_option_value
