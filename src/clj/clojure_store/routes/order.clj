@@ -42,12 +42,12 @@
           ; Dynamic schema generated from the database
            (zipmap
             (for
-             [{:keys [tshirt_option_type_name]} (db/get-tshirt-option-types)]
+             [{:keys [tshirt_option_type_name]} (db/get-option-types)]
               (keyword (str/lower-case tshirt_option_type_name)))
             (for
-             [{:keys [id]} (db/get-tshirt-option-types)]
+             [{:keys [id]} (db/get-option-types)]
               [st/required [st/member (for
-                                       [{:keys [tshirt_option_name]} (db/get-tshirt-option-names-for-type {:type_id id})]
+                                       [{:keys [tshirt_option_name]} (db/get-option-names-for-type {:type_id id})]
                                         tshirt_option_name)]]))))))
 
 ; If the custom image option was selected, ensure that the field isn't empty
@@ -67,8 +67,8 @@
    request
    "order-form.html"
    (merge
-    {:option-types (db/get-tshirt-option-types)}
-    {:options (db/get-tshirt-options)}
+    {:option-types (db/get-option-types)}
+    {:options (db/get-options)}
     (select-keys flash [:errors :full_name :email :phone_number :shipping_address :custom_image_url :delivery_details :quantity]))))
 
 (defn new-order [{:keys [params]}]
@@ -89,19 +89,19 @@
                                     (Integer/parseInt (get params :quantity))
                                     (Double/parseDouble
                                      (get
-                                      (db/get-tshirt-price-for-quality {:quality (get params :quality)})
+                                      (db/get-price-for-quality {:quality (get params :quality)})
                                       :tshirt_option_value))),
                             :payment_success true,
                             :delivered false)))]
         (do
           ; Add each tshirt option in the order to the database for the order id created
-          (doseq [{:keys [tshirt_option_type_name id]} (db/get-tshirt-option-types)]
+          (doseq [{:keys [tshirt_option_type_name id]} (db/get-option-types)]
             (db/create-order-option!
              (hash-map
               :order_id (get new-order :id),
               :tshirt_option_type_id id,
               :tshirt_option_id (get
-                                 (db/get-tshirt-option-for-type-option
+                                 (db/get-option-for-type-and-name
                                   {:type_id id,
                                    :option_name (get params (keyword (str/lower-case tshirt_option_type_name)))})
                                  :id),
@@ -111,7 +111,7 @@
                                                 (get params :custom_image_url)))]
                                      custom-image
                                      (get
-                                      (db/get-tshirt-option-for-type-option
+                                      (db/get-option-for-type-and-name
                                        {:type_id id,
                                         :option_name (get params (keyword (str/lower-case tshirt_option_type_name)))})
                                       :tshirt_option_value)))))))

@@ -1,30 +1,30 @@
--- :name get-tshirt-option-types :? :*
+-- :name get-option-types :? :*
 -- :doc retrieves all tshirt option types
 SELECT
     id,
     tshirt_option_type_name
 FROM tshirt_option_type WHERE is_deleted = 0;
 
--- :name get-tshirt-options :? :*
+-- :name get-options :? :*
 -- :doc retrieves all tshirt options
 SELECT
     tshirt_option_type_id,
     tshirt_option_name
 FROM tshirt_option WHERE is_deleted = 0;
 
--- :name get-tshirt-option-for-type-option :? :1
--- :doc retrieve tshirt option id and value for a given type and option name
+-- :name get-option-names-for-type :? :*
+-- :doc retrieve tshirt option names for a given tshirt option type
+SELECT tshirt_option_name
+FROM tshirt_option WHERE tshirt_option_type_id = :type_id AND is_deleted = 0;
+
+-- :name get-option-for-type-and-name :? :1
+-- :doc retrieve tshirt option for a given type and option name
 SELECT
     id,
     tshirt_option_value
 FROM tshirt_option WHERE tshirt_option_type_id = :type_id AND tshirt_option_name = :option_name AND is_deleted = 0;
 
--- :name get-tshirt-option-names-for-type :? :*
--- :doc retrieve tshirt option names for a given tshirt option type
-SELECT tshirt_option_name
-FROM tshirt_option WHERE tshirt_option_type_id = :type_id AND is_deleted = 0;
-
--- :name get-tshirt-price-for-quality :? :1
+-- :name get-price-for-quality :? :1
 -- :doc retrieve the price for a given tshirt quality
 SELECT tshirt_option_value
 FROM tshirt_option WHERE tshirt_option_type_id = 3 AND tshirt_option_name = :quality;
