@@ -57,7 +57,7 @@
   (if (= (get params :image) "Custom")
     ; Check if custom image url is blank
     (if-let [custom-image (str/blank? (get params :custom_image_url))]
-      (hash-map :custom_image_url "this field is mandatory"))))
+      (hash-map :custom_image_url "this field is mandatory when custom image is selected"))))
 
 ;
 ; Routes
@@ -71,8 +71,6 @@
     {:options (db/get-tshirt-options)}
     (select-keys flash [:errors :full_name :email :phone_number :shipping_address :custom_image_url :delivery_details :quantity]))))
 
-; TODO: Add new order to database if order is successful
-; TODO: Display order confirmation after adding order to database
 (defn new-order [{:keys [params]}]
   (if-let [errors
            (merge
@@ -81,7 +79,45 @@
     (->
      (response/found "/order")
      (assoc :flash (assoc params :errors errors)))
-    (response/found "/order/confirmation")))
+    (do
+      ; Validation was successful, add the order to the database
+      (if-let [new-order (db/create-order!
+                          (merge
+                           params
+                           (hash-map
+                            :price (*
+                                    (Integer/parseInt (get params :quantity))
+                                    (Double/parseDouble
+                                     (get
+                                      (db/get-tshirt-price-for-quality {:quality (get params :quality)})
+                                      :tshirt_option_value))),
+                            :payment_success true,
+                            :delivered false)))]
+        (do
+          ; Add each tshirt option in the order to the database for the order id created
+          (doseq [{:keys [tshirt_option_type_name id]} (db/get-tshirt-option-types)]
+            (db/create-order-option!
+             (hash-map
+              :order_id (get new-order :id),
+              :tshirt_option_type_id id,
+              :tshirt_option_id (get
+                                 (db/get-tshirt-option-for-type-option
+                                  {:type_id id,
+                                   :option_name (get params (keyword (str/lower-case tshirt_option_type_name)))})
+                                 :id),
+              :tshirt_option_value (if-let [custom-image
+                                            (if (= tshirt_option_type_name "Image")
+                                              (if (= (get params :image) "Custom")
+                                                (get params :custom_image_url)))]
+                                     custom-image
+                                     (get
+                                      (db/get-tshirt-option-for-type-option
+                                       {:type_id id,
+                                        :option_name (get params (keyword (str/lower-case tshirt_option_type_name)))})
+                                      :tshirt_option_value)))))))
+
+      ; TODO: Display order confirmation after adding order to database
+      (response/found "/order/confirmation"))))
 
 ; TODO: Display confirmed order id in template
 (defn order-confirmation [request]
