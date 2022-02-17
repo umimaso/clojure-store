@@ -30,6 +30,12 @@ SELECT
     stock_count
 FROM tshirt_option_stock WHERE tshirt_option_id = :option_id;
 
+-- :name remove-stock-for-option-id! :! :n
+-- :doc decrease the stock count for a given option id by given amount
+UPDATE tshirt_option_stock
+SET stock_count = :stock_count
+WHERE tshirt_option_id = :option_id;
+
 -- :name get-price-for-quality :? :1
 -- :doc retrieve the price for a given tshirt quality
 SELECT tshirt_option_value
@@ -50,7 +56,7 @@ INSERT INTO tshirt_order (
 ) VALUES (:full_name, :email, :phone_number, :shipping_address, :delivery_details, :quantity, :price, :payment_success, :delivered)
 RETURNING *;
 
--- :name create-order-option! :? :n
+-- :name create-order-option! :! :n
 -- :doc populate order option for associated order id
 INSERT INTO tshirt_order_option (
     order_id,

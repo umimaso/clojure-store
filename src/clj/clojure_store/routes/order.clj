@@ -69,24 +69,24 @@
   ; If more quantity is requested than the stock we have than return error
   (let [quantity (Integer/parseInt (get params :quantity))]
     (let [result (into {}
-          (for [{:keys [tshirt_option_type_name id]} (db/get-option-types)]
-            (if-let [stock
-                     (get
-                      (db/get-stock-for-option-id
-                       {:option_id
-                        (get
-                         (db/get-option-for-type-and-name
-                          {:type_id id,
-                           :option_name (get params (keyword (str/lower-case tshirt_option_type_name)))})
-                         :id)})
-                      :stock_count)]
-              ; Stock defined for option
-              ; Compare stock against quantity in order
-              (if (> quantity stock)
-                ; Higher quantity requested for option than in stock
-                (hash-map :tshirt_option "Item(s) selected not in stock")))))]
-              (if (not= result {})
-                result))))
+                       (for [{:keys [tshirt_option_type_name id]} (db/get-option-types)]
+                         (if-let [stock
+                                  (get
+                                   (db/get-stock-for-option-id
+                                    {:option_id
+                                     (get
+                                      (db/get-option-for-type-and-name
+                                       {:type_id id,
+                                        :option_name (get params (keyword (str/lower-case tshirt_option_type_name)))})
+                                      :id)})
+                                   :stock_count)]
+                           ; Stock defined for option
+                           ; Compare stock against quantity in order
+                           (if (> quantity stock)
+                             ; Higher quantity requested for option than in stock
+                             (hash-map :tshirt_option "Item(s) selected not in stock")))))]
+      (if (not= result {})
+        result))))
 
 ;
 ; Routes
@@ -125,6 +125,7 @@
                             :delivered false)))]
         (do
           ; Add each tshirt option in the order to the database for the order id created
+          ; Decrease stock for each tshirt option
           (doseq [{:keys [tshirt_option_type_name id]} (db/get-option-types)]
             (db/create-order-option!
              (hash-map
@@ -144,7 +145,24 @@
                                       (db/get-option-for-type-and-name
                                        {:type_id id,
                                         :option_name (get params (keyword (str/lower-case tshirt_option_type_name)))})
-                                      :tshirt_option_value)))))))
+                                      :tshirt_option_value))))
+            (let [option_id
+                  (get
+                   (db/get-option-for-type-and-name
+                    {:type_id id,
+                     :option_name (get params (keyword (str/lower-case tshirt_option_type_name)))})
+                   :id)]
+              (if-let [stock
+                       (get
+                        (db/get-stock-for-option-id
+                         {:option_id option_id})
+                        :stock_count)]
+                (db/remove-stock-for-option-id!
+                 (hash-map
+                  :stock_count (-
+                                stock
+                                (Integer/parseInt (get params :quantity))),
+                  :option_id option_id)))))))
 
       ; TODO: Display order confirmation after adding order to database
       (response/found "/order/confirmation"))))
