@@ -14,19 +14,6 @@
 ; Helpers
 ;
 
-; Unused, hardcoded order schema
-;(def order-schema
-;  {:full_name [st/required st/string]
-;   :email [st/required st/email]
-;   :phone_number [st/required st/string]
-;   :shipping_address [st/required st/string]
-;   :delivery_details [st/string]
-;   :quantity [st/required st/integer-str]
-;   :size [st/required [st/member ["Small" "Medium" "Large" "Extra Large" "Extra Extra Large"]]]
-;   :colour [st/required [st/member ["Red" "Orange" "Yellow" "Green" "Cyan" "Blue" "Violet"]]]
-;   :quality [st/required [st/member ["Standard" "Supreme"]]]
-;   :image [st/required [st/member ["Clojure" "Python" "Rust" "Custom"]]]})
-
 ; Validate the order against expected schema
 (defn validate-order-schema
   [params]
