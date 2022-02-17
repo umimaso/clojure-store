@@ -8,9 +8,12 @@ FROM tshirt_option_type WHERE is_deleted = 0;
 -- :name get-options :? :*
 -- :doc retrieves all tshirt options
 SELECT
-    tshirt_option_type_id,
-    tshirt_option_name
-FROM tshirt_option WHERE is_deleted = 0;
+    tshirt_option.tshirt_option_type_id,
+    tshirt_option.tshirt_option_name,
+    tshirt_option_stock.stock_count
+FROM tshirt_option LEFT JOIN tshirt_option_stock
+    ON tshirt_option.id = tshirt_option_stock.tshirt_option_id
+WHERE tshirt_option.is_deleted = 0;
 
 -- :name get-option-names-for-type :? :*
 -- :doc retrieve tshirt option names for a given tshirt option type
@@ -26,8 +29,7 @@ FROM tshirt_option WHERE tshirt_option_type_id = :type_id AND tshirt_option_name
 
 -- :name get-stock-for-option-id :? :1
 -- :doc retrieve stock count for a given option id
-SELECT
-    stock_count
+SELECT stock_count
 FROM tshirt_option_stock WHERE tshirt_option_id = :option_id;
 
 -- :name remove-stock-for-option-id! :! :n
@@ -54,7 +56,7 @@ INSERT INTO tshirt_order (
     payment_success,
     delivered
 ) VALUES (:full_name, :email, :phone_number, :shipping_address, :delivery_details, :quantity, :price, :payment_success, :delivered)
-RETURNING *;
+returning *;
 
 -- :name create-order-option! :! :n
 -- :doc populate order option for associated order id
