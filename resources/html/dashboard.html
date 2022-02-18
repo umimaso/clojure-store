@@ -1,4 +1,79 @@
 {% extends "base.html" %}
 {% block content %}
-<h1>TODO: Dashboard page</h1>
+<h1 class="title">Administrator Dashboard</h1>
+<div class="container">
+	<h2 class="subtitle">Stock</h2>
+	{% if stock|not-empty %}
+	<div class="table-container">
+		<table class="table is-striped is-bordered">
+			<thead>
+				<tr>
+					<th>Option Type</th>
+					<th>Option Name</th>
+					<th>Stock Count</th>
+				</tr>
+			</thead>
+			<tbody>
+				{% for option in stock %}
+				<tr>
+					<td>{{ option.tshirt_option_type_name }}</td>
+					<td>{{ option.tshirt_option_name }}</td>
+					<td>{{ option.stock_count }}</td>
+				</tr>
+				{% endfor %}
+			</tbody>
+		</table>
+	</div>
+	{% else %}
+	<article class="message is-info">
+		<div class="message-header">
+			<p>No Stock Limits</p>
+		</div>
+		<div class="message-body">No stock limits are currently set for any t-shirt options. Set stock limits below.</div>
+	</article>
+	{% endif %}
+
+	{% if options|not-empty %}
+	<form method="POST" action="/dashboard/stock">
+		{% csrf-field %}
+		<div class="field">
+			<label class="label" for="option-id">Option <span class="required-field">*</span></label>
+			<div class="control">
+				<div class="select">
+					<select id="option-id" name="option-id" required>
+						{% for option in options %}
+						<option value="{{ option.id }}">{{ option.tshirt_option_type_name }} - {{ option.tshirt_option_name }}</option>
+						{% endfor %}
+					</select>
+				</div>
+			</div>
+		</div>
+
+		<div class="field">
+			<label class="label" for="stock">Stock (+/-)</label>
+			<div class="control has-icons-left">
+				<input class="input" type="number" id="quantity" name="quantity" placeholder="0">
+				<span class="icon is-small is-left">
+					<i class="fa-solid fa-cubes"></i>
+				</span>
+			</div>
+		</div>
+
+		<div class="field">
+			<div class="control">
+				<input value="Update Stock" class="button is-primary" type="submit" name="action" >
+				<input value="Remove Option" class="button is-danger" type="submit" name="action">
+			</div>
+		</div>
+	</form>
+	{% else %}
+	<article class="message is-info">
+		<div class="message-header">
+			<p>No Options Found</p>
+		</div>
+		<div class="message-body">No t-shirt options have been found. This may be due to non being setup, or all of them being disabled.</div>
+	</article>
+	{% endif %}
+	<hr>
+</div>
 {% endblock %}

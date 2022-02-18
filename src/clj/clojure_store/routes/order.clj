@@ -144,7 +144,7 @@
                         (db/get-stock-for-option-id
                          {:option_id option_id})
                         :stock_count)]
-                (db/remove-stock-for-option-id!
+                (db/update-stock-for-option-id!
                  (hash-map
                   :stock_count (-
                                 stock
