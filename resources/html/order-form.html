@@ -1,6 +1,7 @@
 {% extends "base.html" %}
 {% block content %}
 <h1 class="title">T-Shirt Order Form</h1>
+{% ifunequal success "true" %}
 <div class="container">
 	<form method="POST">
 		{% csrf-field %}
@@ -144,4 +145,12 @@
 		</div>
 	</form>
 </div>
+{% else %}
+<article class="message is-success">
+	<div class="message-header">
+		<p>Order Placed</p>
+	</div>
+	<div class="message-body">Thank you for your order. You'll recieve email confirmation shortly. <a href="/order">Order again.</a></div>
+</article>
+{% endifunequal %}
 {% endblock %}

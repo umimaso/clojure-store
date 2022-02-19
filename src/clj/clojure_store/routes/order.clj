@@ -79,13 +79,14 @@
 ; Routes
 ;
 (defn order-form [{:keys [flash] :as request}]
+  (log/debug flash)
   (layout/render
    request
    "order-form.html"
    (merge
     {:option-types (db/get-option-types)}
     {:options (db/get-options)}
-    (select-keys flash [:errors :full_name :email :phone_number :shipping_address :custom_image_url :delivery_details :quantity]))))
+    (select-keys flash [:errors :success :full_name :email :phone_number :shipping_address :custom_image_url :delivery_details :quantity]))))
 
 (defn new-order [{:keys [params]}]
   (if-let [errors
@@ -151,19 +152,13 @@
                                 (Integer/parseInt (get params :quantity))),
                   :option_id option_id)))))))
 
-      ; TODO: Display order confirmation after adding order to database
-      (response/found "/order/confirmation"))))
-
-; TODO: Display confirmed order id in template
-(defn order-confirmation [request]
-  (layout/render
-   request
-   "order-confirmation.html"))
+      (->
+        (response/found "/order")
+        (assoc :flash (assoc params :success "true"))))))
 
 (defn order-routes []
   [""
    {:middleware [middleware/wrap-csrf
                  middleware/wrap-formats]}
    ["/order" {:get order-form
-              :post new-order}]
-   ["/order/confirmation" {:get order-confirmation}]])
+              :post new-order}]])
