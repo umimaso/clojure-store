@@ -1,5 +1,6 @@
 (ns clojure-store.routes.dashboard
   (:require
+   [clojure-store.handlers :as handlers]
    [clojure-store.layout :as layout]
    [clojure-store.db.core :as db]
    [clojure.java.io :as io]
@@ -15,7 +16,7 @@
    request
    "dashboard.html"
    (merge
-    {:stock (db/get-stock)}
+    {:stock (handlers/get-stock)}
     {:options (db/get-options)})))
 
 (defn update-stock [{:keys [params]}]

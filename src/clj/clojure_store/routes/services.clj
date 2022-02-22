@@ -1,5 +1,6 @@
 (ns clojure-store.routes.services
   (:require
+   [clojure-store.handlers :as handlers]
    [reitit.swagger :as swagger]
    [reitit.swagger-ui :as swagger-ui]
    [reitit.ring.coercion :as coercion]
@@ -45,5 +46,8 @@
             {:url "/api/swagger.json"
              :config {:validator-url nil}})}]]
 
-   ["/ping"
-    {:get (constantly (ok {:message "pong"}))}]])
+   ["/stock"
+    {:get {:summary "return stock level"
+           :handler (fn [_]
+                      {:status 200
+                       :body (handlers/get-stock)})}}]])
