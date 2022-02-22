@@ -153,8 +153,8 @@
                   :option_id option_id)))))))
 
       (->
-        (response/found "/order")
-        (assoc :flash (assoc params :success "true"))))))
+       (response/found "/order")
+       (assoc :flash (assoc params :success "true"))))))
 
 (defn order-routes []
   [""

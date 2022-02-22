@@ -20,19 +20,18 @@
     {:options (db/get-options)})))
 
 (defn update-stock [{:keys [params]}]
-  (log/debug params)
   ; Determine action sent
   (if (= (get params :action) "Remove Option")
     (db/remove-stock-limit-for-option-id!
-      (hash-map :option_id (get params :option-id))))
+     (hash-map :option_id (get params :option-id))))
   (if (= (get params :action) "Update Stock")
     (db/update-stock-for-option-id!
-      (hash-map
+     (hash-map
       :stock_count (+
                     (if-let [stock
-                              (get
+                             (get
                               (db/get-stock-for-option-id
-                                {:option_id
+                               {:option_id
                                 (get params :option-id)})
                               :stock_count)]
                       stock
