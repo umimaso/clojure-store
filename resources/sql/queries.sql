@@ -2,8 +2,25 @@
 -- :name get-orders :? :*
 -- :doc get all orders with their associated options
 SELECT
-    *
+    email,
+    phone_number,
+    delivery_details,
+    delivered,
+    id,
+    full_name,
+    quantity,
+    price,
+    shipping_address
 FROM tshirt_order;
+
+-- :name get-options-for-order :? :*
+-- :doc get all order options for a given order id
+SELECT
+    tshirt_option_type_id,
+    tshirt_option_id,
+    tshirt_option_value
+FROM tshirt_order_option
+WHERE order_id = :option_id;
 
 -- :name create-order! :<! :1
 -- :doc create a new order for the given order parameters
@@ -16,7 +33,7 @@ INSERT INTO tshirt_order (
     quantity,
     price,
     delivered
-) VALUES (:full_name, :email, :phone_number, :shipping_address, :delivery_details, :quantity, :price, :delivered)
+) VALUES (:full_name, :email, :phone_number, :shipping_address, :delivery_details, :quantity, :price, 0)
 returning *;
 
 -- :name create-order-option! :! :n

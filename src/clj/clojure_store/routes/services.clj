@@ -22,9 +22,12 @@
 (s/def :orders/shipping_address string?)
 (s/def :orders/delivery_details string?)
 (s/def :orders/quantity int?)
-(s/def :orders/price int?)
+(s/def :orders/price string?)
+(s/def :orders/delivered int?)
+(s/def :orders/options (s/coll-of (s/keys :req-un [:order-option/order_id :order-option/tshirt_option_type_id :order-option/tshirt_option_id :order-option/tshirt_option_value])))
+(s/def ::orders-response (s/coll-of (s/keys :req-un [:orders/id :orders/full_name :orders/email :orders/phone_number :orders/shipping_address :orders/delivery_details :orders/quantity :orders/price :orders/delivered] :opt-un [:orders/options])))
 (s/def ::orders-post-request (s/keys :req-un [:orders/full_name :orders/email :orders/phone_number :orders/shipping_address :orders/delivery_details :orders/quantity :orders/price]))
-(s/def ::orders-response (s/keys :req-un [:orders/id]))
+(s/def ::orders-post-response (s/keys :req-un [:orders/id]))
 
 (s/def :order-option/order_id int?)
 (s/def :order-option/tshirt_option_type_id int?)
@@ -88,16 +91,17 @@
 
     [""
      {:get {:summary "return orders"
+            :responses {200 {:body ::orders-response}}
             :handler api/get-orders}
       :post {:summary "add a new order"
              :parameters {:body ::orders-post-request}
-             :responses {200 {:body ::orders-response}}
+             :responses {201 {:body ::orders-post-response}}
              :handler api/new-order}}]
 
     ["/option"
      {:post {:summary "add an order option to an order"
              :parameters {:body ::order-option-post-request}
-             :responses {200 {:body ::order-option-response}}
+             :responses {201 {:body ::order-option-response}}
              :handler api/new-order-option}}]]
 
    ["/stock"
@@ -109,11 +113,11 @@
             :handler api/get-stock}
       :post {:summary "update stock limit for option id"
              :parameters {:body ::stock-post-request}
-             :responses {200 {:body ::stock-response}}
+             :responses {201 {:body ::stock-response}}
              :handler api/update-stock-option}
       :delete {:summary "remove stock limit for option id"
                :parameters {:body ::stock-delete-request}
-               :responses {200 {:body ::stock-response}}
+               :responses {204 {}}
                :handler api/remove-stock-option}}]]
 
    ["/options"

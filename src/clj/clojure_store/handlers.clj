@@ -23,16 +23,14 @@
     (let [stock-count (get (get (get req :parameters) :body) :stock_count)]
       (do
         (db/update-stock-for-option-id! {:option_id option-id, :stock_count stock-count})
-        {:status 200
+        {:status 201
          :body (db/get-stock)}))))
 
 (defn remove-stock-option [req]
   (let [option-id (get (get (get req :parameters) :body) :tshirt_option_id)]
     (do
       (db/remove-stock-limit-for-option-id! {:option_id option-id})
-      {:status 200
-       :body (db/get-stock)})
-    {:status 400}))
+      {:status 204})))
 
 ; Option endpoint methods
 (defn get-options [& req]
@@ -46,16 +44,26 @@
 ; Order endpoint methods
 (defn get-orders [& req]
   {:status 200
-   :body (db/get-orders)})
+   :body (for [{:keys [id full_name email phone_number shipping_address delivery_details quantity price delivered]} (db/get-orders)]
+           {:id id,
+            :full_name full_name,
+            :email email,
+            :phone_number phone_number,
+            :shipping_address shipping_address,
+            :delivery_details delivery_details,
+            :quantity quantity,
+            :price price,
+            :delivered delivered,
+            :tshirt_options (db/get-options-for-order {:option_id id})})})
 
 (defn new-order [req]
   (let [params (get (get req :parameters) :body)]
     (let [new-order (db/create-order! params)]
-      {:status 200
-       :body new-order})))
+      {:status 201
+       :body {:id (get new-order :id)}})))
 
 (defn new-order-option [req]
   (let [params (get (get req :parameters) :body)]
     (db/create-order-option! params)
-    {:status 200
+    {:status 201
      :body (db/get-orders)}))
