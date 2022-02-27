@@ -81,7 +81,7 @@
 					<select id="{{ option-type.tshirt_option_type_name|lower }}" name="{{ option-type.tshirt_option_type_name|lower }}" required>
 						{% for option in options %}
 						{% if option-type.id = option.tshirt_option_type_id %}
-						<option value="{{ option.tshirt_option_name }}">{{ option.tshirt_option_name }}{% if option.stock_count %} ({{ option.stock_count }}){% endif %}</option>
+						<option value="{{ option.id }}">{{ option.tshirt_option_name }}{% if option.stock_count %} ({{ option.stock_count }}){% endif %}</option>
 						{% endif %}
 						{% endfor %}
 					</select>

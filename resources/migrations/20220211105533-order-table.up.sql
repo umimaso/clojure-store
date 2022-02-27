@@ -7,7 +7,6 @@ CREATE TABLE tshirt_order
     delivery_details TEXT,
     quantity INTEGER,
     price TEXT,
-    payment_success BOOLEAN,
     delivered BOOLEAN);
 --;;
 CREATE TABLE tshirt_order_option

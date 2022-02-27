@@ -1,5 +1,6 @@
 (ns clojure-store.routes.order
   (:require
+   [clojure-store.handlers :as api]
    [clojure-store.layout :as layout]
    [clojure-store.db.core :as db]
    [clojure.java.io :as io]
@@ -35,8 +36,8 @@
             (for
              [{:keys [id]} (db/get-option-types)]
               [st/required [st/member
-                            (for [{:keys [tshirt_option_name]} (db/get-option-names-for-type {:type_id id})]
-                              tshirt_option_name)]]))))))
+                            (for [{:keys [tshirt_option_id]} (db/get-option-ids-for-type {:type_id id})]
+                              (str tshirt_option_id))]]))))))
 
 ; If the custom image option was selected, ensure that the field isn't empty
 (defn validate-order-image
@@ -59,13 +60,7 @@
                        (for [{:keys [tshirt_option_type_name id]} (db/get-option-types)]
                          (if-let [stock
                                   (get
-                                   (db/get-stock-for-option-id
-                                    {:option_id
-                                     (get
-                                      (db/get-option-for-type-and-name
-                                       {:type_id id,
-                                        :option_name (get params (keyword (str/lower-case tshirt_option_type_name)))})
-                                      :id)})
+                                   (db/get-stock-for-option-id {:option_id (get params (keyword (str/lower-case tshirt_option_type_name)))})
                                    :stock_count)]
                            ; Stock defined for option
                            ; Compare stock against quantity in order
@@ -75,6 +70,22 @@
       (if (not= result {})
         result))))
 
+; Get option types for use within order form
+(defn option-types []
+  (for [{:keys [id tshirt_option_type_name]} (api/req api/get-option-types)]
+    {:id id,
+     :tshirt_option_type_name tshirt_option_type_name}))
+
+; Get options for use within order form for dropdown values, and attributes
+(defn options []
+  (let [stock (api/req api/get-stock)]
+    (for [{:keys [id tshirt_option_type_id tshirt_option_name]} (api/req api/get-options)]
+      (let [stock_option (into {} (filter #(= (:tshirt_option_id %) id) stock))]
+        {:id id,
+         :tshirt_option_type_id tshirt_option_type_id,
+         :tshirt_option_name tshirt_option_name,
+         :stock_count (get stock_option :stock_count)}))))
+
 ;
 ; Routes
 ;
@@ -83,8 +94,8 @@
    request
    "order.html"
    (merge
-    {:option-types (db/get-option-types)}
-    {:options (db/get-options)}
+    {:option-types (option-types)}
+    {:options (options)}
     (select-keys flash [:errors :success :full_name :email :phone_number :shipping_address :custom_image_url :delivery_details :quantity]))))
 
 (defn new-order [{:keys [params]}]
@@ -97,57 +108,44 @@
     (assoc (response/found "/order") :flash (assoc params :errors errors))
 
     ; Validation was successful, add the order to the database
+    (let [new-order
+          (api/req-body api/new-order
+                        (merge
+                         params
+                         {:price (*
+                                  (Integer/parseInt (get params :quantity))
+                                  (Double/parseDouble
+                                   (get
+                                    (db/get-price-for-quality {:option_id (get params :quality)})
+                                    :tshirt_option_value))),
+                          :delivered false}))]
+      (let [options (api/req api/get-options)]
+        (let [option-types (api/req api/get-option-types)]
+          ; Add each tshirt option in the order to the database for the order id created
+          ; Decrease stock for each tshirt option
+          (doseq [{:keys [id tshirt_option_type_name]} option-types]
+            (let [option-id (Integer/parseInt (get params (keyword (str/lower-case tshirt_option_type_name))))]
+              (let [option (into {} (filter #(= (:id %) option-id) options))]
+                (api/req-body api/new-order-option
+                              {:order_id (get new-order :id),
+                               :tshirt_option_type_id id,
+                               :tshirt_option_id option-id,
+                               :tshirt_option_value (if-let [custom-image
+                                                             (if (= tshirt_option_type_name "Image")
+                                                               (if (= (get params :image) "18") ; 18 is the Custom option id
+                                                                 (get params :custom_image_url)))]
+                                                      custom-image
+                                                      (get option :tshirt_option_value))})
 
-    (let [new-order (db/create-order!
-                     (merge
-                      params
-                      {:price (*
-                               (Integer/parseInt (get params :quantity))
-                               (Double/parseDouble
-                                (get
-                                 (db/get-price-for-quality {:quality (get params :quality)})
-                                 :tshirt_option_value))),
-                       :payment_success true,
-                       :delivered false}))]
-
-      ; Add each tshirt option in the order to the database for the order id created
-      ; Decrease stock for each tshirt option
-      (doseq [{:keys [tshirt_option_type_name id]} (db/get-option-types)]
-        (db/create-order-option!
-         {:order_id (get new-order :id),
-          :tshirt_option_type_id id,
-          :tshirt_option_id (get
-                             (db/get-option-for-type-and-name
-                              {:type_id id,
-                               :option_name (get params (keyword (str/lower-case tshirt_option_type_name)))})
-                             :id),
-          :tshirt_option_value (if-let [custom-image
-                                        (if (= tshirt_option_type_name "Image")
-                                          (if (= (get params :image) "Custom")
-                                            (get params :custom_image_url)))]
-                                 custom-image
-                                 (get
-                                  (db/get-option-for-type-and-name
-                                   {:type_id id,
-                                    :option_name (get params (keyword (str/lower-case tshirt_option_type_name)))})
-                                  :tshirt_option_value))})
-        (let [option_id
-              (get
-               (db/get-option-for-type-and-name
-                {:type_id id,
-                 :option_name (get params (keyword (str/lower-case tshirt_option_type_name)))})
-               :id)]
-          (if-let [stock
-                   (get
-                    (db/get-stock-for-option-id
-                     {:option_id option_id})
-                    :stock_count)]
-            (db/update-stock-for-option-id!
-             {:stock_count (-
-                            stock
-                            (Integer/parseInt (get params :quantity))),
-              :option_id option_id}))))
-
+                (if-let [stock
+                         (get
+                          (db/get-stock-for-option-id {:option_id option-id})
+                          :stock_count)]
+                  (api/req-body api/update-stock-option
+                                {:stock_count (-
+                                               stock
+                                               (Integer/parseInt (get params :quantity))),
+                                 :tshirt_option_id option-id})))))))
       (assoc (response/found "/order") :flash (assoc params :success "true")))))
 
 (defn order-routes []
