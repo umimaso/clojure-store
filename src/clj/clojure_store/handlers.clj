@@ -67,3 +67,10 @@
     (db/create-order-option! params)
     {:status 201
      :body (db/get-orders)}))
+
+(defn update-order-status [req]
+  (let [order-id (get (get (get req :parameters) :body) :order_id)]
+    (let [delivered (get (get (get req :parameters) :body) :delivered)]
+      (do
+        (db/update-order-status! {:order_id order-id :delivered delivered})
+        {:status 204}))))

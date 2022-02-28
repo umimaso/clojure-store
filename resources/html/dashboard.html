@@ -75,5 +75,73 @@
 	</article>
 	{% endif %}
 	<hr>
+
+	<h2 class="subtitle">Orders</h2>
+	{% if orders|not-empty %}
+	<div class="table-container">
+		<table class="table is-striped is-bordered">
+			<thead>
+				<tr>
+					<th>ID</th>
+					<th>Name</th>
+					<th>Email</th>
+					<th>Phone Number</th>
+					<th>Shipping Address</th>
+					<th>Delivery Details</th>
+					<th>Quantity</th>
+					<th>Price</th>
+					<th>Delivered</th>
+					{% for option-type in option-types %}
+					<td>{{ option-type.tshirt_option_type_name }}</td>
+					{% endfor %}
+				</tr>
+			</thead>
+			<tbody>
+				{% for order in orders %}
+				<form method="POST" action="/dashboard/order">
+					{% csrf-field %}
+					<input id="order-id" name="order-id" type="hidden" value="{{ order.id }}" />
+					<tr>
+						<th>{{ order.id }}</th>
+						<td>{{ order.full_name }}</td>
+						<td>{{ order.email }}</td>
+						<td>{{ order.phone_number }}</td>
+						<td>{{ order.shipping_address }}</td>
+						<td>{{ order.delivery_details }}</td>
+						<td>{{ order.quantity }}</td>
+						<td>£{{ order.price }}</td>
+						<td>
+							<div class="field">
+								<div class="control">
+									{% ifequal order.delivered "0" %}
+									<input value="Set Delivered" class="button is-primary" type="submit" name="action" >
+									{% else %}
+									<input value="Set Undelivered" class="button is-danger" type="submit" name="action">
+									{% endifequal %}
+								</div>
+							</div>
+						</td>
+						{% for option-type in option-types %}
+						{% for option in order.tshirt_options %}
+						{% if option.tshirt_option_type_id = option-type.id %}
+						<td>{{ option.tshirt_option_value }}</td>
+						{% endif %}
+						{% endfor %}
+						{% endfor %}
+					</tr>
+				</form>
+				{% endfor %}
+			</tbody>
+		</table>
+	</div>
+	{% else %}
+	<article class="message is-info">
+		<div class="message-header">
+			<p>No Orders Found</p>
+		</div>
+		<div class="message-body">No orders have been found.</div>
+	</article>
+	{% endif %}
+	<hr>
 </div>
 {% endblock %}

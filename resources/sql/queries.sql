@@ -45,6 +45,11 @@ INSERT INTO tshirt_order_option (
     tshirt_option_value
 ) VALUES (:order_id, :tshirt_option_type_id, :tshirt_option_id, :tshirt_option_value);
 
+-- :name update-order-status! :! :n
+-- :doc update the delivered status for associated order id
+UPDATE tshirt_order
+SET delivered = :delivered
+WHERE id = :order_id;
 
 -- Stock queries
 -- :name get-stock :? :*
@@ -101,6 +106,13 @@ SELECT
     id,
     tshirt_option_type_name
 FROM tshirt_option_type WHERE is_deleted = 0;
+
+-- :name get-option-types-inc-del :? :*
+-- :doc retrieves all tshirt option types
+SELECT
+    id,
+    tshirt_option_type_name
+FROM tshirt_option_type;
 
 -- :name get-option-ids-for-type :? :*
 -- :doc retrieve tshirt option names for a given tshirt option type

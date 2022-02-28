@@ -24,15 +24,16 @@
 (s/def :orders/quantity int?)
 (s/def :orders/price string?)
 (s/def :orders/delivered int?)
-(s/def :orders/options (s/coll-of (s/keys :req-un [:order-option/order_id :order-option/tshirt_option_type_id :order-option/tshirt_option_id :order-option/tshirt_option_value])))
-(s/def ::orders-response (s/coll-of (s/keys :req-un [:orders/id :orders/full_name :orders/email :orders/phone_number :orders/shipping_address :orders/delivery_details :orders/quantity :orders/price :orders/delivered] :opt-un [:orders/options])))
+(s/def :orders/tshirt_options (s/coll-of (s/keys :opt-un [:order-option/order_id :order-option/tshirt_option_type_id :order-option/tshirt_option_id :order-option/tshirt_option_value])))
+(s/def ::orders-response (s/coll-of (s/keys :req-un [:orders/id :orders/full_name :orders/email :orders/phone_number :orders/shipping_address :orders/delivery_details :orders/quantity :orders/price :orders/delivered] :opt-un [:orders/tshirt_options])))
 (s/def ::orders-post-request (s/keys :req-un [:orders/full_name :orders/email :orders/phone_number :orders/shipping_address :orders/delivery_details :orders/quantity :orders/price]))
 (s/def ::orders-post-response (s/keys :req-un [:orders/id]))
+(s/def ::orders-patch-request (s/keys :req-un [:orders/id :orders/delivered]))
 
 (s/def :order-option/order_id int?)
 (s/def :order-option/tshirt_option_type_id int?)
 (s/def :order-option/tshirt_option_id int?)
-(s/def :order-option/tshirt_option_value int?)
+(s/def :order-option/tshirt_option_value string?)
 (s/def ::order-option-post-request (s/keys :req-un [:order-option/order_id :order-option/tshirt_option_type_id :order-option/tshirt_option_id :order-option/tshirt_option_value]))
 (s/def ::order-option-response (s/coll-of (s/keys :req-un [:order-option/order_id :order-option/tshirt_option_type_id :order-option/tshirt_option_id :order-option/tshirt_option_value])))
 
@@ -96,7 +97,11 @@
       :post {:summary "add a new order"
              :parameters {:body ::orders-post-request}
              :responses {201 {:body ::orders-post-response}}
-             :handler api/new-order}}]
+             :handler api/new-order}
+      :patch {:summary "update delivered status for an order"
+              :parameters {:body ::orders-patch-request}
+              :responses {204 {}}
+              :handler api/update-order-status}}]
 
     ["/option"
      {:post {:summary "add an order option to an order"
@@ -111,10 +116,10 @@
      {:get {:summary "return stock limits"
             :responses {200 {:body ::stock-response}}
             :handler api/get-stock}
-      :post {:summary "update stock limit for option id"
-             :parameters {:body ::stock-post-request}
-             :responses {201 {:body ::stock-response}}
-             :handler api/update-stock-option}
+      :put {:summary "update stock limit for option id"
+            :parameters {:body ::stock-post-request}
+            :responses {201 {:body ::stock-response}}
+            :handler api/update-stock-option}
       :delete {:summary "remove stock limit for option id"
                :parameters {:body ::stock-delete-request}
                :responses {204 {}}
