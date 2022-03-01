@@ -1,17 +1,38 @@
 -- Order queries
 -- :name get-orders :? :*
--- :doc get all orders with their associated options
+-- :doc get all orders
 SELECT
-    email,
-    phone_number,
-    delivery_details,
-    delivered,
     id,
     full_name,
+    email,
+    phone_number,
+    shipping_address,
+    delivery_details,
     quantity,
     price,
-    shipping_address
+    delivered
 FROM tshirt_order;
+
+-- :name search-orders :? :*
+-- :doc search all orders with given values
+SELECT
+    id,
+    full_name,
+    email,
+    phone_number,
+    shipping_address,
+    delivery_details,
+    quantity,
+    price,
+    delivered
+FROM tshirt_order
+WHERE (:full_name = '' OR full_name LIKE :full_name)
+    AND (:email = '' OR email LIKE :email)
+    AND (:phone = '' OR phone_number LIKE :phone)
+    AND (:shipping = '' OR shipping_address LIKE :shipping)
+    AND (:delivery = '' OR delivery_details LIKE :delivery)
+    AND (:quantity = '' OR quantity LIKE :quantity)
+    AND (:price = '' OR price LIKE :price);
 
 -- :name get-options-for-order :? :*
 -- :doc get all order options for a given order id

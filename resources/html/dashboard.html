@@ -77,30 +77,39 @@
 	<hr>
 
 	<h2 class="subtitle">Orders</h2>
-	{% if orders|not-empty %}
 	<div class="table-container">
 		<table class="table is-striped is-bordered">
 			<thead>
-				<tr>
-					<th>ID</th>
-					<th>Name</th>
-					<th>Email</th>
-					<th>Phone Number</th>
-					<th>Shipping Address</th>
-					<th>Delivery Details</th>
-					<th>Quantity</th>
-					<th>Price</th>
-					<th>Delivered</th>
-					{% for option-type in option-types %}
-					<td>{{ option-type.tshirt_option_type_name }}</td>
-					{% endfor %}
-				</tr>
+				<form method="POST" action="/dashboard">
+					<div class="field">
+						<div class="control">
+							<input value="Search" class="button is-primary" type="submit" name="action" >
+							<input value="Reset" class="button is-danger" type="submit" name="action" >
+						</div>
+					</div>
+					{% csrf-field %}
+					<tr>
+						<th>ID</th>
+						<th>Name<input class="input" type="text" id="name" name="name"></th>
+						<th>Email<input class="input" type="text" id="email" name="email"></th>
+						<th>Phone Number<input class="input" type="text" id="phone" name="phone"></th>
+						<th>Shipping Address<input class="input" type="text" id="shipping" name="shipping"></th>
+						<th>Delivery Details<input class="input" type="text" id="delivery" name="delivery"></th>
+						<th>Quantity<input class="input" type="text" id="quantity" name="quantity"></th>
+						<th>Price<input class="input" type="text" id="price" name="price"></th>
+						<th>Delivered</th>
+						{% for option-type in option-types %}
+						<td>{{ option-type.tshirt_option_type_name }}</td>
+						{% endfor %}
+					</tr>
+				</form>
 			</thead>
+			{% if orders|not-empty %}
 			<tbody>
 				{% for order in orders %}
 				<form method="POST" action="/dashboard/order">
 					{% csrf-field %}
-					<input id="order-id" name="order-id" type="hidden" value="{{ order.id }}" />
+					<input id="order-id" name="order-id" type="hidden" value="{{ order.id }}">
 					<tr>
 						<th>{{ order.id }}</th>
 						<td>{{ order.full_name }}</td>
@@ -132,9 +141,12 @@
 				</form>
 				{% endfor %}
 			</tbody>
+			{% else %}
+			<tbody></tbody>
+			{% endif %}
 		</table>
 	</div>
-	{% else %}
+	{% if orders|empty? %}
 	<article class="message is-info">
 		<div class="message-header">
 			<p>No Orders Found</p>
@@ -142,6 +154,7 @@
 		<div class="message-body">No orders have been found.</div>
 	</article>
 	{% endif %}
+	
 	<hr>
 </div>
 {% endblock %}

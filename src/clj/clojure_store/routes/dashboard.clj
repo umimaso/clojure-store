@@ -55,7 +55,33 @@
     {:stock (stock-table)}
     {:options (options-dropdown)}
     {:option-types (option-types)}
-    {:orders (api/req api/get-orders)})))
+    {:orders (if-let [orders (not-empty (select-keys flash [:found-orders]))]
+               (get (select-keys flash [:found-orders]) :found-orders)
+               (api/req api/get-orders))})))
+
+(defn search-orders [{:keys [params]}]
+  (if (= (get params :action) "Search")
+    (let [orders
+          (for [{:keys [id full_name email phone_number shipping_address delivery_details quantity price delivered]}
+                (db/search-orders {:full_name (str "%" (get params :name) "%"),
+                                   :email (str "%" (get params :email) "%"),
+                                   :phone (str "%" (get params :phone) "%"),
+                                   :shipping (str "%" (get params :shipping) "%"),
+                                   :delivery (str "%" (get params :delivery) "%"),
+                                   :quantity (str "%" (get params :quantity) "%"),
+                                   :price (str "%" (get params :price) "%")})]
+            {:id id,
+             :full_name full_name,
+             :email email,
+             :phone_number phone_number,
+             :shipping_address shipping_address,
+             :delivery_details delivery_details,
+             :quantity quantity,
+             :price price,
+             :delivered delivered,
+             :tshirt_options (db/get-options-for-order {:option_id id})})]
+      (assoc (response/found "/") :flash (assoc {} :found-orders orders)))
+    (response/found "/")))
 
 (defn update-stock [{:keys [params]}]
   ; Determine action sent
@@ -87,6 +113,7 @@
    {:middleware [middleware/wrap-csrf
                  middleware/wrap-formats]}
    ["/" {:get dashboard}]
-   ["/dashboard" {:get dashboard}]
+   ["/dashboard" {:get dashboard
+                  :post search-orders}]
    ["/dashboard/stock" {:post update-stock}]
    ["/dashboard/order" {:post order-delivered}]])
