@@ -116,7 +116,7 @@
                                   (Integer/parseInt (get params :quantity))
                                   (Double/parseDouble
                                    (get
-                                    (db/get-price-for-quality {:option_id (get params :quality)})
+                                    (db/get-option-value-for-option-id {:option_id (get params :quality)})
                                     :tshirt_option_value))),
                           :delivered false}))]
       (let [options (api/req api/get-options)]

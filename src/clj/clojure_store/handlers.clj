@@ -58,9 +58,8 @@
 
 (defn new-order [req]
   (let [params (get (get req :parameters) :body)]
-    (let [new-order (db/create-order! params)]
-      {:status 201
-       :body {:id (get new-order :id)}})))
+    {:status 201
+     :body (db/create-order! params)}))
 
 (defn new-order-option [req]
   (let [params (get (get req :parameters) :body)]

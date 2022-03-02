@@ -1,3 +1,0 @@
-[tool.sqlfluff.core]
-dialect = "sqlite"
-exclude_rules = "L059, L057"

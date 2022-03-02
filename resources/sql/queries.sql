@@ -55,7 +55,7 @@ INSERT INTO tshirt_order (
     price,
     delivered
 ) VALUES (:full_name, :email, :phone_number, :shipping_address, :delivery_details, :quantity, :price, 0)
-returning *;
+returning id;
 
 -- :name create-order-option! :! :n
 -- :doc populate order option for associated order id
@@ -140,7 +140,7 @@ FROM tshirt_option_type;
 SELECT id AS tshirt_option_id
 FROM tshirt_option WHERE tshirt_option_type_id = :type_id AND is_deleted = 0;
 
--- :name get-price-for-quality :? :1
+-- :name get-option-value-for-option-id :? :1
 -- :doc retrieve the price for a given tshirt quality
 SELECT tshirt_option_value
-FROM tshirt_option WHERE tshirt_option_type_id = 3 AND id = :option_id;
+FROM tshirt_option WHERE id = :option_id;

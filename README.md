@@ -4,11 +4,8 @@ Uses Clojure plugin cljfmt
 - Check formatting with `lein cljfmt check`
 - Fix formatting with `lein cljfmt fix`
 
-## Linting
-### SQL
-Uses Python package sqlfluff (`pip install sqlfluff`)
-- Check for SQL errors with `sqlfluff lint`
-- Fix errors with `sqlfluff fix`
+## Testing
+Run Clojure tests with `lein test`
 
 ## Migrations
 To create a new migration
