@@ -9,7 +9,7 @@
 		<div class="field">
 			<label class="label" for="full_name">Full Name <span class="required-field">*</span></label>
 			<div class="control has-icons-left has-icons-right">
-				<input value="{{ full_name }}" class="input {% if errors.full_name %}is-danger{% endif %}" type="text" id="full_name" name="full_name" placeholder="First Last" required>
+				<input value="{{ full_name }}" class="input {% if errors.full_name %}is-danger{% endif %}" type="text" id="full_name" name="full_name" placeholder="First Last" required />
 				<span class="icon is-small is-left">
 					<i class="fa-solid fa-user"></i>
 				</span>
@@ -27,7 +27,7 @@
 		<div class="field">
 			<label class="label" for="email">Email <span class="required-field">*</span></label>
 			<div class="control has-icons-left has-icons-right">
-				<input value="{{ email }}" class="input {% if errors.email %}is-danger{% endif %}" type="email" id="email" name="email" placeholder="user@domain.tld" required>
+				<input value="{{ email }}" class="input {% if errors.email %}is-danger{% endif %}" type="email" id="email" name="email" placeholder="user@domain.tld" required />
 				<span class="icon is-small is-left">
 					<i class="fa-solid fa-envelope"></i>
 				</span>
@@ -44,8 +44,8 @@
 
 		<div class="field">
 			<label class="label" for="phone_number">Phone Number <span class="required-field">*</span></label>
-			<div class="control has-icons-left  has-icons-right">
-				<input value="{{ phone_number }}" class="input {% if errors.phone_number %}is-danger{% endif %}" type="tel" id="phone_number" name="phone_number" placeholder="00000 000 000" required>
+			<div class="control has-icons-left  has-icons-right" />
+				<input value="{{ phone_number }}" class="input {% if errors.phone_number %}is-danger{% endif %}" type="tel" id="phone_number" name="phone_number" placeholder="00000 000 000" required />
 				<span class="icon is-small is-left">
 					<i class="fa-solid fa-phone"></i>
 				</span>
@@ -93,7 +93,7 @@
 		<div class="field">
 			<label class="label" for="custom_image_url">Custom Image</label>
 			<div class="control has-icons-left has-icons-right">
-				<input value="{{ custom_image_url }}" class="input {% if errors.custom_image_url %}is-danger{% endif %}" type="text" id="custom_image_url" name="custom_image_url" placeholder="URL to an image">
+				<input value="{{ custom_image_url }}" class="input {% if errors.custom_image_url %}is-danger{% endif %}" type="text" id="custom_image_url" name="custom_image_url" placeholder="URL to an image" />
 				<span class="icon is-small is-left">
 					<i class="fa-solid fa-image"></i>
 				</span>
@@ -123,7 +123,7 @@
 		<div class="field">
 			<label class="label" for="quantity">Quantity <span class="required-field">*</span></label>
 			<div class="control has-icons-left has-icons-right">
-				<input value="{{ quantity }}" class="input {% if errors.quantity %}is-danger{% endif %}" type="number" id="quantity" name="quantity" placeholder="1" min="1" required>
+				<input value="{{ quantity }}" class="input {% if errors.quantity %}is-danger{% endif %}" type="number" id="quantity" name="quantity" placeholder="1" min="1" required />
 				<span class="icon is-small is-left">
 					<i class="fa-solid fa-shirt"></i>
 				</span>
